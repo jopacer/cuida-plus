@@ -8,7 +8,7 @@ export default function Home(){
   const [minExp, setMinExp] = useState(0)
 
   useEffect(()=>{
-    fetch('/data.json').then(r=>r.json()).then(setItems)
+    fetch('/api/caregivers').then(r=>r.json()).then(setItems)
   }, [])
 
   const locations = useMemo(()=> Array.from(new Set(items.map(i=>i.ubicacion))).sort(), [items])
