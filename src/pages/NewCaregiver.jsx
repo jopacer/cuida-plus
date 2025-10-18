@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 export default function NewCaregiver(){
   const [form, setForm] = useState({
-    nombre:'', ubicacion:'', experiencia:0, tarifa:0,
+    nombre:'', apellidos:'', telefono:'', ubicacion:'', experiencia:0, tarifa:0,
     disponibilidad:'', certificaciones:'', descripcion:'', foto:''
   })
   const [result, setResult] = useState(null)
@@ -10,10 +10,14 @@ export default function NewCaregiver(){
   const onSubmit = async (e) => {
     e.preventDefault()
     try{
-      const res = await fetch('/.netlify/functions/new-caregiver', {
+      const formData = {
+        ...form,
+        certificaciones: form.certificaciones.split(';').map(s=>s.trim()).filter(Boolean)
+      }
+      const res = await fetch('/api/caregivers', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(form)
+        body: JSON.stringify(formData)
       })
       if(res.ok){
         const data = await res.json()
@@ -34,6 +38,8 @@ export default function NewCaregiver(){
       <h1>Añadir cuidador</h1>
       <form onSubmit={onSubmit} className="grid2">
         <input placeholder="Nombre" value={form.nombre} onChange={bind('nombre')} required/>
+        <input placeholder="Apellidos" value={form.apellidos} onChange={bind('apellidos')}/>
+        <input placeholder="Teléfono" value={form.telefono} onChange={bind('telefono')}/>
         <input placeholder="Ubicación" value={form.ubicacion} onChange={bind('ubicacion')} required/>
         <input type="number" min="0" placeholder="Experiencia (años)" value={form.experiencia} onChange={bind('experiencia')} required/>
         <input type="number" min="0" step="0.5" placeholder="Tarifa €/h" value={form.tarifa} onChange={bind('tarifa')} required/>
